@@ -30,7 +30,7 @@
         <button class="botton_show"> 3) Seleziona tutti gli ospiti che hanno più di 20 anni (al momento dell’esecuzione della query)
         </button>
           <div class="panel">
-            <p></p>
+            <p>SELECT * FROM `ospiti` WHERE (DATEDIFF(NOW(), `date_of_birth`) / 365) >= 21</p>
           </div>
         <button class="botton_show"> 4) Seleziona tutti gli ospiti il cui nome inizia con la D
         </button>
@@ -45,12 +45,12 @@
         <button class="botton_show"> 6) Qual è il prezzo massimo pagato?
         </button>
           <div class="panel">
-            <p></p>
+            <p>SELECT MAX(`price`) FROM `pagamenti`</p>
           </div>
         <button class="botton_show"> 7) Seleziona gli ospiti riconosciuti con patente e nati nel 1975
         </button>
           <div class="panel">
-            <p></p>
+            <p>SELECT * FROM `ospiti` WHERE `document_type` = 'Driver License' AND `date_of_birth` LIKE '1975%'</p>
           </div>
         <button class="botton_show"> 8) Quanti posti letto ha l’hotel in totale?
         </button>
