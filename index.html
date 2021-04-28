@@ -15,6 +15,50 @@
       <div class="container">
         <img src="db-first.png" alt="">
       </div>
+
+      <div class="es-28-aprile">
+        <button class="botton_show"> 1) Seleziona tutti gli ospiti che sono stati identificati con la carta di identità
+        </button>
+          <div class="panel">
+            <p>SELECT `name`,`lastname` FROM `ospiti` WHERE `document_type` = 'CI'</p>
+          </div>
+        <button class="botton_show"> 2) Seleziona tutti gli ospiti che sono nati dopo il 1988
+        </button>
+          <div class="panel">
+            <p>SELECT `name`,`lastname` FROM `ospiti` WHERE `date_of_birth` > '1988'</p>
+          </div>
+        <button class="botton_show"> 3) Seleziona tutti gli ospiti che hanno più di 20 anni (al momento dell’esecuzione della query)
+        </button>
+          <div class="panel">
+            <p></p>
+          </div>
+        <button class="botton_show"> 4) Seleziona tutti gli ospiti il cui nome inizia con la D
+        </button>
+          <div class="panel">
+            <p>SELECT * FROM `ospiti` WHERE `name` LIKE 'd%'</p>
+          </div>
+        <button class="botton_show"> 5) Calcola il totale degli ordini accepted
+        </button>
+          <div class="panel">
+            <p>SELECT SUM(`price`) FROM `pagamenti` WHERE `status` = 'accepted'</p>
+          </div>
+        <button class="botton_show"> 6) Qual è il prezzo massimo pagato?
+        </button>
+          <div class="panel">
+            <p></p>
+          </div>
+        <button class="botton_show"> 7) Seleziona gli ospiti riconosciuti con patente e nati nel 1975
+        </button>
+          <div class="panel">
+            <p></p>
+          </div>
+        <button class="botton_show"> 8) Quanti posti letto ha l’hotel in totale?
+        </button>
+          <div class="panel">
+            <p>SELECT SUM(`beds`) FROM `stanze`</p>
+          </div>
+
+      </div>
     </body>
     <script type="text/javascript" src="script.js">
 
