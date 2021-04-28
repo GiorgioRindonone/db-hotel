@@ -30,7 +30,7 @@
         <button class="botton_show"> 3) Seleziona tutti gli ospiti che hanno più di 20 anni (al momento dell’esecuzione della query)
         </button>
           <div class="panel">
-            <p>SELECT * FROM `ospiti` WHERE (DATEDIFF(NOW(), `date_of_birth`) / 365) >= 21</p>
+            <p>SELECT * FROM `ospiti` WHERE year(date_of_birth) <= '2001'</p>
           </div>
         <button class="botton_show"> 4) Seleziona tutti gli ospiti il cui nome inizia con la D
         </button>
