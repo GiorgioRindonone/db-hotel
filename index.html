@@ -17,6 +17,8 @@
       </div>
 
       <div class="es-28-aprile">
+        <h1>28 Aprile</h1>
+
         <button class="botton_show"> 1) Seleziona tutti gli ospiti che sono stati identificati con la carta di identità
         </button>
           <div class="panel">
@@ -30,7 +32,12 @@
         <button class="botton_show"> 3) Seleziona tutti gli ospiti che hanno più di 20 anni (al momento dell’esecuzione della query)
         </button>
           <div class="panel">
-            <p>SELECT * FROM `ospiti` WHERE year(date_of_birth) <= '2001'</p>
+            <p>SELECT * FROM `ospiti` WHERE `date_of_birth` year(date_of_birth) <= '2001'
+            <br>
+            SAMU: SELECT * FROM `ospiti` WHERE `date_of_birth` < DATE_SUB(CURRENT_DATE(), INTERVAL 29 YEAR)
+            <br>
+
+        </p>
           </div>
         <button class="botton_show"> 4) Seleziona tutti gli ospiti il cui nome inizia con la D
         </button>
@@ -45,7 +52,10 @@
         <button class="botton_show"> 6) Qual è il prezzo massimo pagato?
         </button>
           <div class="panel">
-            <p>SELECT MAX(`price`) FROM `pagamenti`</p>
+            <p>SELECT MAX(`price`) AS 'prezzo_massimo' FROM `pagamenti`  WHERE `status` = 'accepted'
+              <br>
+            SAMU: SELECT * AS 'prezzo_massimo' FROM  `pagamenti` ORDER BY `price` DESC LIMIT 1 WHERE `status` = 'accepted'
+            </p>
           </div>
         <button class="botton_show"> 7) Seleziona gli ospiti riconosciuti con patente e nati nel 1975
         </button>
@@ -59,6 +69,154 @@
           </div>
 
       </div>
+      <div class="es-29-aprile">
+        <h1>29 Aprile</h1>
+        <button class="botton_show"> 1) Conta gli ospiti raggruppandoli per anno di nascita
+        </button>
+          <div class="panel">
+            <p>SELECT YEAR(`date_of_birth`)
+            AS 'anno_nascita', COUNT(`id`) AS 'totale'
+            FROM `ospiti`
+            GROUP BY `anno_nascita`</p>
+          </div>
+        <button class="botton_show"> 2) Somma i prezzi dei pagamenti raggruppandoli per status
+        </button>
+          <div class="panel">
+            <p>SELECT `status`, SUM(`price`) AS 'totale_prenotazioni'
+            FROM `prenotazioni`
+            GROUP BY `stanza_id`</p>
+          </div>
+        <button class="botton_show"> 3) Conta quante volte è stata prenotata ogni stanza
+        </button>
+          <div class="panel">
+            <p>SELECT `stanze`.`room_number`, COUNT(`prenotazioni`.`id`) AS 'totale_prenotazioni'
+            FROM `prenotazioni`
+            INNER JOIN `stanze`
+            ON `prenotazioni`.`stanza_id` = `stanze`.`id`
+            GROUP BY `stanze`.`room_number`
+            ORDER BY `totale_prenotazioni`</p>
+            <br>
+            <p>SAMU: SELECT MAX(`totale_prenotazioni`) AS 'stanza_piu_prenotata'
+              FROM (SELECT `stanze`.`room_number`, COUNT(`prenotazioni`.`id`) AS 'totale_prenotazioni'
+              FROM `prenotazioni`
+              INNER JOIN `stanze`
+              ON `prenotazioni`.`stanza_id` = `stanze`.`id`
+              GROUP BY `stanze`.`room_number`) risultato</p>
+
+          </div>
+        <button class="botton_show"> 4) Fai una analisi per vedere se ci sono ore in cui le prenotazioni sono più frequenti
+        </button>
+          <div class="panel">
+            <p>SELECT HOUR(`created_at`) AS `ora`, COUNT(`id`) AS 'totale_prenotazioni'
+              FROM `prenotazioni`
+              GROUP BY `ora`
+              ORDER BY `totale_prenotazioni` DESC</p>
+          </div>
+        <button class="botton_show"> 5) Quante prenotazioni ha fatto l’ospite che ha fatto più prenotazioni?
+        </button>
+          <div class="panel">
+            <p>SELECT `ospite_id`, COUNT(`id`) AS 'totale'
+              FROM `prenotazioni_has_ospiti`
+              GROUP BY `ospite_id`
+              ORDER BY `totale` DESC LIMIT 1</p>
+          </div>
+        <button class="botton_show"> 1) Come si chiamano gli ospiti che hanno fatto più di due prenotazioni?
+        </button>
+          <div class="panel">
+            <p>SELECT `ospiti`.`name`, `ospiti`.`lastname`, COUNT(`prenotazioni_has_ospiti`.`id`) AS 'totale'
+              FROM `prenotazioni_has_ospiti`
+              INNER JOIN `ospiti`
+              ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
+              GROUP BY `prenotazioni_has_ospiti`.`ospite_id`
+              HAVING `totale` > 2
+              <br>
+            </p>
+          </div>
+        <button class="botton_show"> 2) Stampare tutti gli ospiti per ogni prenotazione
+        </button>
+          <div class="panel">
+            <p>SELECT `prenotazioni_has_ospiti`.`prenotazione_id`, `ospiti`.`name`, `ospiti`.`lastname`
+              FROM `prenotazioni_has_ospiti`
+              INNER JOIN `ospiti`
+              ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`</p>
+          </div>
+        <button class="botton_show"> 3) Stampare Nome, Cognome, Prezzo e Pagante per tutte le prenotazioni fatte a Maggio 2018
+        </button>
+          <div class="panel">
+            <p>SELECT `ospiti`.`name` , `ospiti`.`lastname`, `pagamenti`.`price`, `pagamenti`.`pagante_id`, `paganti`.`name`, `paganti`.`lastname`
+              FROM `prenotazioni_has_ospiti`
+              INNER JOIN `ospiti`
+              ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
+              INNER JOIN `pagamenti`
+              ON `prenotazioni_has_ospiti`.`prenotazione_id` = `pagamenti`.`prenotazione_id`
+              INNER JOIN `paganti`
+              ON `pagamenti`.`pagante_id` = `paganti`.`id`
+              INNER JOIN `prenotazioni`
+              ON `prenotazioni_has_ospiti`.`prenotazione_id` = `prenotazioni`.`id`
+              WHERE `prenotazioni`.`created_at` LIKE '2018-05-%'</p>
+              <br>
+              <p>SELECT `ospiti`.`name` , `ospiti`.`lastname`, `pagamenti`.`price`, `pagamenti`.`pagante_id`, `paganti`.`name`, `paganti`.`lastname`
+              FROM `prenotazioni_has_ospiti`
+              INNER JOIN `ospiti`
+              ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
+              INNER JOIN `pagamenti`
+              ON `prenotazioni_has_ospiti`.`prenotazione_id` = `pagamenti`.`prenotazione_id`
+              INNER JOIN `paganti`
+              ON `pagamenti`.`pagante_id` = `paganti`.`id`
+              INNER JOIN `prenotazioni`
+              ON `prenotazioni_has_ospiti`.`prenotazione_id` = `prenotazioni`.`id`
+              WHERE `prenotazioni`.`created_at` BETWEEN '2018-05-01' AND '2018-05-31'</p>
+              <br>
+              <p>SELECT * FROM `prenotazioni`
+                INNER JOIN `pagamenti`
+                ON `pagamenti`.`prenotazione_id` = `prenotazioni`.`id`
+                INNER JOIN `paganti`
+                ON `pagamenti`.`pagante_id` = `paganti`.`id`
+                INNER JOIN `ospiti`
+                ON `paganti`.`ospite_id` = `ospiti`.`id`
+                WHERE `prenotazioni`.`created_at`LIKE '2018-05-%'
+              </p>
+          </div>
+
+        <button class="botton_show"> 4) Fai la somma di tutti i prezzi delle prenotazioni per le stanze del primo piano
+        </button>
+          <div class="panel">
+            <p>SELECT SUM(`pagamenti`.`price`) AS 'totale_incasso_primo_piano'
+              FROM `prenotazioni`
+              INNER JOIN `pagamenti`
+              ON `pagamenti`.`prenotazione_id` = `prenotazioni`.`id`
+              INNER JOIN `stanze`
+              ON `prenotazioni`.`stanza_id` = `stanze`.`id`
+              WHERE `stanze`.`floor` = 1
+              </p>
+          </div>
+        <button class="botton_show"> 5) Prendi i dati di fatturazione per la prenotazione con id=7
+        </button>
+          <div class="panel">
+            <p>SELECT `prenotazioni`.`id`, `pagamenti`.`price`, `paganti`.`name`, `paganti`.`lastname`, `paganti`.`address`
+              FROM `prenotazioni`
+              INNER JOIN `pagamenti`
+              ON `pagamenti`.`prenotazione_id` = `prenotazioni`.`id`
+              INNER JOIN `paganti`
+              ON `pagamenti`.`pagante_id`= `paganti`.`id`
+              WHERE `prenotazioni`.`id` = 7</p>
+          </div>
+        <button class="botton_show"> 6) Le stanze sono state tutte prenotate almeno una volta? (Visualizzare le stanze non ancora prenotate)
+        </button>
+          <div class="panel">
+            <p>SELECT *
+              FROM `stanze`
+              LEFT JOIN `prenotazioni`
+              ON `prenotazioni`.`stanza_id` = `stanze`.`id`
+              WHERE `prenotazioni`.`stanza_id`
+              IS NULL</p>
+          </div>
+
+
+
+
+      </div>
+
     </body>
     <script type="text/javascript" src="script.js">
 
